@@ -279,9 +279,4 @@ A: 旧版账单匹配逻辑有 bug，已在 `billing_agent.py` 修复；请使�
 **Q: `/api/health` 显示 postgres/redis 异常？**  
 A: 检查 Postgres / Redis 是否启动，以及 `.env` 中 `DATABASE_URL`、`REDIS_URL` 是否正确。
 
-## 相关文档
 
-- [README_LangGraph_CLI.md](README_LangGraph_CLI.md)
-- [langgraph.json](langgraph.json)
-- [env_example.txt](env_example.txt)
-- [LangGraph CLI 配置](https://docs.langchain.com/langgraph-platform/cli#configuration-file)
