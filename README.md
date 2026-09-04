@@ -21,18 +21,6 @@
 
 打开 `http://localhost:5000/login`，支持登录与注册切换；登录成功后进入聊天页。
 
-### 首页
-
-![首页](./doc/chat-index.jpg)
-
-### 多轮对话
-
-![多轮对话](./doc/chat-his.jpg)
-
-### 工作流
-
-![工作流](./doc/chat-graph.jpg)
-
 ## 账号体系与会话隔离
 
 ### 设计目标
