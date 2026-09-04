@@ -1,0 +1,25 @@
+# === LLM ===
+OPENAI_API_KEY=your_api_key
+OPENAI_BASE_URL=https://api.deepseek.com
+OPENAI_MODEL=deepseek-chat
+
+# === Flask ===
+FLASK_SECRET_KEY=change-me-to-a-long-random-string
+FLASK_PORT=5000
+FLASK_DEBUG=false
+
+# === Postgres（用户 + 会话目录 + 消息镜像；生产 Checkpointer 同库）===
+DATABASE_URL=postgresql://cs_user:cs_pass@127.0.0.1:5432/customer_service
+# LangGraph 生产部署（langgraph up / docker）使用：
+DATABASE_URI=postgresql://cs_user:cs_pass@127.0.0.1:5432/customer_service
+
+# === Redis（Flask 登录 Session）===
+REDIS_URL=redis://127.0.0.1:6379/0
+# LangGraph 生产部署消息队列（与 Flask Session 分库，避免键冲突）
+REDIS_URI=redis://127.0.0.1:6379/1
+
+SESSION_TTL_SECONDS=86400
+
+# === LangGraph API（web_app 调用）===
+LANGGRAPH_API_URL=http://127.0.0.1:2024
+LANGGRAPH_GRAPH_NAME=customer_service

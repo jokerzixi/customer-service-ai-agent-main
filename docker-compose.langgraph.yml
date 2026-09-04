@@ -1,0 +1,57 @@
+# 生产向示例：LangGraph Agent Server 使用 Postgres Checkpointer + Redis 队列
+# 先启动本文件中的 postgres/redis，再构建并运行 langgraph 镜像（需本机已 docker build）。
+# 本地开发仍可用：langgraph dev（内存 runtime）+ 业务库镜像对话（conversation_messages）。
+#
+# 用法示例：
+#   docker compose -f docker-compose.langgraph.yml up -d
+#   # 然后按官方文档用 langgraph Dockerfile 启动 API，注入：
+#   #   DATABASE_URI / REDIS_URI（见下方 environment 注释）
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: cs-langgraph-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: cs_user
+      POSTGRES_PASSWORD: cs_pass
+      POSTGRES_DB: customer_service
+    volumes:
+      - cs_lg_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cs_user -d customer_service"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: cs-langgraph-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # 取消注释并替换 IMAGE_NAME 为你构建的 LangGraph API 镜像后即可联调生产 Checkpointer
+  # langgraph-api:
+  #   image: ${IMAGE_NAME}
+  #   ports:
+  #     - "2024:8000"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     DATABASE_URI: postgresql://cs_user:cs_pass@postgres:5432/customer_service?sslmode=disable
+  #     REDIS_URI: redis://redis:6379/1
+  #     # Flask Session 建议用 redis://.../0，与 REDIS_URI 分库
+
+volumes:
+  cs_lg_pgdata:

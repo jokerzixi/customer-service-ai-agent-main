@@ -1,0 +1,31 @@
+# 本地基础设施：Postgres（用户/会话目录/Checkpointer）+ Redis（可选；本机已有 Redis 时可注释掉）
+# 启动：docker compose up -d postgres
+# 若 Docker Desktop 未开，请先启动 Docker 再执行。
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: cs-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: cs_user
+      POSTGRES_PASSWORD: cs_pass
+      POSTGRES_DB: customer_service
+    volumes:
+      - cs_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cs_user -d customer_service"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 若本机 6379 已被占用，请改端口或注释本服务，并在 .env 指向本机 Redis
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: cs-redis
+  #   ports:
+  #     - "6379:6379"
+
+volumes:
+  cs_pgdata:
